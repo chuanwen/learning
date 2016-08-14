@@ -6,6 +6,6 @@ defmodule Todo.CacheTest do
         {:ok, cache_pid} = Todo.Cache.start
         server = Todo.Cache.server_process(cache_pid, "Bob's list")
         assert is_pid(server)
-        assert server = Todo.Cache.server_process(cache_pid, "Bob's list")
+        assert server == Todo.Cache.server_process(cache_pid, "Bob's list")
     end
 end
