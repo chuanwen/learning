@@ -4,9 +4,8 @@ defmodule Todo.DatabaseTest do
 
     setup do
         tmpdir = "./tmp" <> to_string(:rand.uniform)
-        Todo.Database.start(tmpdir)
+        Todo.Database.start_link(tmpdir)
         on_exit fn ->
-            Todo.Database.stop()
             File.rm_rf!(tmpdir)
         end
     end

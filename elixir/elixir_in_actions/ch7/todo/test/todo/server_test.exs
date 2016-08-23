@@ -4,15 +4,14 @@ defmodule Todo.ServerTest do
 
     setup do
         tmpdir = "./tmp" <> to_string(:rand.uniform)
-        Todo.Database.start(tmpdir)
+        Todo.Database.start_link(tmpdir)
         on_exit fn ->
-            Todo.Database.stop()
             File.rm_rf!(tmpdir)
         end
     end
 
     test "add_entry and entries" do
-        {:ok, pid} =  Todo.Server.start("Bob's list")
+        {:ok, pid} =  Todo.Server.start_link("Bob's list")
         Todo.Server.add_entry(pid, %{date: "8/1", title: "dental"})
         Todo.Server.add_entry(pid, %{date: "8/1", title: "hiking"})
         Todo.Server.add_entry(pid, %{date: "2016/08/12", title: "running"})
