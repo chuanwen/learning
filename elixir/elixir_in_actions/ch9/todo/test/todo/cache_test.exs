@@ -4,6 +4,7 @@ defmodule Todo.CacheTest do
 
     test "server_process of Todo.Cache" do
         {:ok, _} = Todo.Cache.start_link
+        {:ok, _} = Todo.Database.start_link("./persist")
         server = Todo.Cache.server_process("Bob's list")
         assert is_pid(server)
         assert server == Todo.Cache.server_process("Bob's list")

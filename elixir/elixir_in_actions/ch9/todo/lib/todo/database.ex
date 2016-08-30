@@ -2,6 +2,7 @@ defmodule Todo.Database do
     use GenServer
 
     def start_link(db_folder) do
+        IO.puts "Starting database server."
 
         GenServer.start_link(__MODULE__, db_folder, name: :todo_database)
     end
@@ -49,7 +50,7 @@ defmodule Todo.DatabaseWorker do
     use GenServer
 
     def start_link(db_folder) do
-        IO.puts "Starting database server."
+        IO.puts "Starting database worker."
 
         GenServer.start_link(__MODULE__, db_folder)
     end
