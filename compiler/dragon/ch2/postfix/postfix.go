@@ -1,3 +1,6 @@
+// Syntax-directed translator that maps infix arithmetic expressions into
+// postfix expressions. This is Go version of the Java program in Figure 2.27
+// in p75 of the Dragon book.
 package main
 
 import (
@@ -26,38 +29,32 @@ func getToken() string {
 
 func expr() {
 	term()
-	rest()
-}
-
-func rest() {
-	switch lookahead {
-	case "+":
-		match("+")
-		term()
-		puts("+")
-		rest()
-	case "-":
-		match("-")
-		term()
-		puts("-")
-		rest()
+	for {
+		switch lookahead {
+		case "+":
+			match("+")
+			term()
+			puts("+")
+		case "-":
+			match("-")
+			term()
+			puts("-")
+		default:
+			return
+		}
 	}
 }
 
 func term() {
 	if isDigit(lookahead) {
-		t := lookahead
+		puts(lookahead)
 		match(lookahead)
-		puts(t)
 	}
 }
 
 func isDigit(x string) bool {
 	i, err := strconv.Atoi(x)
-	if err == nil && i >= 0 && i <= 9 {
-		return true
-	}
-	return false
+	return err == nil && i >= 0 && i <= 9
 }
 
 func match(x string) {
