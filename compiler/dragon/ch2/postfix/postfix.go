@@ -1,31 +1,46 @@
-// Syntax-directed translator that maps infix arithmetic expressions into
-// postfix expressions. This is Go version of the Java program in Figure 2.27
-// in p75 of the Dragon book + extension of two operators (*, /) and
-// parenthesis, e.g. 2*(5-3)
-package main
+// Package postfix is syntax-directed translator that maps infix
+// arithmetic expressions into postfix expressions. This is Go
+// version of the Java program in Figure 2.27 in p75 of the Dragon
+// book + extension of two operators (*, /) and parenthesis, e.g. 2*(5-3)
+package postfix
 
 import (
+	"bytes"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
+	"strings"
 )
 
-var puts = fmt.Print
-var lookahead string
+const testVersion = 2
 
-func main() {
-	for {
-		lookahead = getToken()
-		expr()
-		puts("\n")
-	}
+var (
+	stdin     *strings.Reader
+	stdout    *bytes.Buffer
+	lookahead string
+)
+
+// InfixToPostfix converts an infix arithmetic expression to
+// a postfix one.
+func InfixToPostfix(infix string) string {
+	// initialize stdin and stdout
+	stdin = strings.NewReader(infix)
+	stdout = &bytes.Buffer{}
+
+	lookahead = getToken()
+	expr()
+
+	return stdout.String()
 }
 
 func getToken() string {
 	buf := make([]byte, 1)
-	os.Stdin.Read(buf)
+	stdin.Read(buf)
 	return string(buf[0])
+}
+
+func puts(args ...interface{}) {
+	fmt.Fprint(stdout, args...)
 }
 
 func expr() {
