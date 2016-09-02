@@ -83,10 +83,7 @@ func term() {
 
 func factor() {
 	switch {
-	case lookahead.Tag == lexer.NUM:
-		puts(lookahead.String(), " ")
-		match(lookahead)
-	case lookahead.Tag == lexer.ID:
+	case lookahead.Tag == lexer.NUM || lookahead.Tag == lexer.ID:
 		puts(lookahead.String(), " ")
 		match(lookahead)
 	case lookahead.String() == "(":
