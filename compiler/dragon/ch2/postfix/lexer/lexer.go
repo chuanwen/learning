@@ -63,20 +63,16 @@ func (lex *Lexer) Scan() bool {
 	var lookahead byte
 	var err error
 
-	// skipWhite
-	for {
-		lookahead, err = lex.stdin.ReadByte()
-		if err == nil && isWhiteSpace(lookahead) {
-			if lookahead == '\n' {
-				lex.line++
-			}
-			continue
-		}
-		if err != nil {
-			return false // usually means reach End Of Stream.
-		}
-		lex.stdin.UnreadByte()
-		break
+	// skip white space.
+	lookahead, err = lex.skipWhiteSpace()
+	if err != nil {
+		return false // usually means reach End of Stream
+	}
+
+	// Skip comments
+	lookahead, err = lex.skipComment()
+	if err != nil {
+		return false
 	}
 
 	switch {
@@ -96,6 +92,84 @@ func (lex *Lexer) Scan() bool {
 		lex.token = Token{int(lookahead), nil}
 	}
 	return true
+}
+
+func (lex *Lexer) skipWhiteSpace() (lookahead byte, err error) {
+	for {
+		lookahead, err = lex.stdin.ReadByte()
+		if err == nil && isWhiteSpace(lookahead) {
+			if lookahead == '\n' {
+				lex.line++
+			}
+			continue
+		}
+		if err == nil {
+			lex.stdin.UnreadByte()
+		}
+		break
+	}
+	return
+}
+
+func (lex *Lexer) skipComment() (lookahead byte, err error) {
+	buf, err := lex.stdin.Peek(2)
+	if err != nil {
+		if len(buf) == 1 {
+			err = nil
+			lookahead = buf[0]
+		}
+		return
+	}
+	if buf[0] != '/' || buf[1] != '/' && buf[1] != '*' {
+		lookahead = buf[0]
+		return
+	}
+	if buf[1] == '/' {
+		return lex._skipLineComment()
+	}
+	return lex._skipBlockComment()
+}
+
+func (lex *Lexer) _skipLineComment() (lookahead byte, err error) {
+	for {
+		lookahead, err = lex.stdin.ReadByte()
+		if lookahead == '\n' || err != nil {
+			break
+		}
+	}
+	if err != nil {
+		return
+	}
+	buf, err := lex.stdin.Peek(1)
+	if len(buf) == 1 {
+		lookahead = buf[0]
+	}
+	return
+}
+
+func (lex *Lexer) _skipBlockComment() (lookahead byte, err error) {
+	lex.stdin.ReadByte()
+	lex.stdin.ReadByte()
+	var prev byte
+	prev, err = lex.stdin.ReadByte()
+	if err != nil {
+		return
+	}
+	for {
+		lookahead, err = lex.stdin.ReadByte()
+		if err != nil {
+			return
+		}
+		if prev == '*' && lookahead == '/' {
+			break
+		}
+		prev = lookahead
+	}
+	buf, err := lex.stdin.Peek(1)
+	if len(buf) == 1 {
+		lookahead = buf[0]
+	}
+	return
 }
 
 func (lex *Lexer) scanNUM() float64 {
@@ -126,7 +200,7 @@ func (lex *Lexer) scanOP() string {
 	if err2 != nil {
 		return string(b1)
 	}
-	if b2 == '=' && strings.ContainsAny("><=+-*/", string(b1)) ||
+	if b2 == '=' && strings.ContainsAny("><!=+-*/", string(b1)) ||
 		b2 == b1 && strings.ContainsAny("+-&|", string(b1)) {
 		return string([]byte{b1, b2})
 	}
@@ -147,5 +221,5 @@ func isLetter(x byte) bool {
 }
 
 func isOperator(x byte) bool {
-	return strings.ContainsAny("><=+-*/&|", string(x))
+	return strings.ContainsAny("><=+-*/&|!", string(x))
 }

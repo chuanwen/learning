@@ -12,9 +12,9 @@ var testCases = []struct {
 	expected    []Token
 	description string
 }{
-	{" varX1 *", []Token{{ID, "varX1"}, {OP, "*"}}, "variable and an operator"},
-	{"10.5 + _time", []Token{{NUM, 10.5}, {OP, "+"}, {ID, "_time"}}, "arithmetic expression"},
-	{"xyz == 25", []Token{{ID, "xyz"}, {OP, "=="}, {NUM, 25.0}}, "logical expression"},
+	{" varX1 * // hello", []Token{{ID, "varX1"}, {OP, "*"}}, "variable and an operator"},
+	{"10.5 + _time /* hello 1+2 \n world! //*/", []Token{{NUM, 10.5}, {OP, "+"}, {ID, "_time"}}, "arithmetic expression"},
+	{"xyz == 25 !=/* OK", []Token{{ID, "xyz"}, {OP, "=="}, {NUM, 25.0}, {OP, "!="}}, "logical expression"},
 	{"if (true) { x++ }",
 		[]Token{
 			{ID, "if"}, {int('('), nil}, {BOOL, true}, {int(')'), nil},
