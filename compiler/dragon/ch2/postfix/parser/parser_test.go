@@ -7,7 +7,7 @@ var testCases = []struct {
 	expected    string
 	description string
 }{
-	{"10 + 2", "10 2 +", "simple +"},
+	{"10 + 2 // add two numbers", "10 2 +", "simple +"},
 	{"x2/2.5", "x2 2.5 /", "simple variable"},
 	{"9+5-2", "9 5 + 2 -", "two operators: + and -"},
 	{"1+3/2", "1 3 2 / +", "two operators: + and /"},
