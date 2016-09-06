@@ -1,26 +1,18 @@
-    /* This section is for definitions */
-
+%{
+    int yylineno;
+%}
 %%
-    /* This section is for rules */
 
-    /* match everything except newline */
-.   ECHO;
-    /* match newline */
-\n  ECHO;
+^(.*)\n     printf("%4d\t%s", ++yylineno, yytext);
 
 %%
 
-    /* This section is for subroutines */
-
-/*
- * Function yywrap is called by lex when input is exhausted. 
- * Return 1 if you are done or 0 if more processing is required.
- */
 int yywrap(void) {
-    return 1; 
+    return 1;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+    yyin = fopen(argv[1], "r");
     yylex();
-    return 0;
+    fclose(yyin);
 }
