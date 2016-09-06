@@ -1,11 +1,20 @@
-all: echo
+CC = gcc
+
+ALL = echo identifier wc
+all: $(ALL)
 
 clean:
-	rm -f echo echo.c
+	rm -f $(ALL) *.c
 
-echo.c: echo.l
-	flex -o echo.c echo.l
+.l.c:
+	flex -o $@ $<
 
 echo: echo.c
-	gcc echo.c -o echo
+	$(CC) $< -o $@
+
+identifier: identifier.c
+	$(CC) $< -o $@
+
+wc: wc.c
+	$(CC) $< -o $@
 
