@@ -13,5 +13,5 @@ int yywrap(void) {
 int main(int argc, char* argv[]) {
     yyin = fopen(argv[1], "r");
     yylex();
-    printf("%d\t%d\t%d\n", nline, nword, nchar);
+    printf("%d\t%d\t%d\t%s\n", nline, nword, nchar, argv[1]);
 }

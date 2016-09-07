@@ -1,4 +1,5 @@
 CC = gcc
+LEX = flex
 
 ALL = echo identifier wc
 all: $(ALL)
@@ -7,7 +8,7 @@ clean:
 	rm -f $(ALL) *.c
 
 .l.c:
-	flex -o $@ $<
+	$(LEX) -o $@ $<
 
 echo: echo.c
 	$(CC) $< -o $@
