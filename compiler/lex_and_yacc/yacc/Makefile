@@ -1,13 +1,15 @@
 CC = gcc
+CFLGS = -std=c99
 LEX = flex
 
 all: calculator
 
 clean:
-	rm -f calculator *.c *.h
+	rm -f calculator calculator.tab.* calculator.c
 
-calculator: calculator.c calculator.tab.c
-	$(CC) -o $@ calculator.c calculator.tab.c -lm
+calculator: calculator.c calculator.tab.c ex_shell.c
+	$(CC) $(CFLGS) -o $@ $^ -lm
+
 
 calculator.c: calculator.l
 	$(LEX) -o $@ $<
