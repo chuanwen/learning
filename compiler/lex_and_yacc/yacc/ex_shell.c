@@ -5,6 +5,9 @@
 
 #define EPS 1e-16
 
+void ex_init(int argc, char** argv) {;}
+void ex_final(int argc, char** argv) {;}
+
 double double_abs(double x) {
     if (x > 0.0) {
         return x;

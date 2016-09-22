@@ -1,0 +1,38 @@
+                extern printf
+
+%macro          print 0
+
+                SECTION .data
+.p_fmt          db "%f",10,0
+.p_float        dq 0.0
+
+                SECTION .text
+                fstp qword [.p_float]
+
+                push dword [.p_float+4]
+                push dword [.p_float]
+                push dword .p_fmt
+                call printf
+                add esp, 12
+
+%endmacro
+
+
+%macro          compLE 0
+                SECTION .data
+.EPS            dq 1.e-16
+                SECTION .text
+                fsub
+                fld qword [.EPS]
+                fcom st0, st1
+                fstsw ax
+                fstp
+                fstp
+                and eax, 0100011100000000B ; take only condition code flags
+                cmp eax, 0000000100000000B ; is st0 < source ?
+%endmacro
+
+global main
+main:
+
+

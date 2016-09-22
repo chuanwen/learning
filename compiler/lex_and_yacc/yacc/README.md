@@ -6,8 +6,9 @@ $ make
 ```
 
 ### Example run:
+TODO - need to be updated
 
-```sh
+```python
 $ ./calculator
 
 print (1+2)*3

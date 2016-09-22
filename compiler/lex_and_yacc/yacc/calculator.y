@@ -5,6 +5,8 @@
 #include "calculator.h"
 #include <math.h>
 
+extern FILE *yyin;
+
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(int i);
@@ -42,7 +44,7 @@ double symtable[26];
 %%
 
 program:
-        function        { exit(0); }
+        function        { ; }
         ;
 
 function:
@@ -139,7 +141,14 @@ void yyerror(char *s) {
     fprintf(stderr, "%s\n", s);
 }
 
-int main(void) {
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <program_file>\nExample: %s p1.ca\n", argv[0], argv[0]);
+        exit(1);
+    }
+    yyin = fopen(argv[1], "r");
+    ex_init(argc, argv);
     yyparse();
+    ex_final(argc, argv);
     return 0;
 }
