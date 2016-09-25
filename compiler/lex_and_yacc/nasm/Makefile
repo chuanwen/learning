@@ -19,5 +19,5 @@ clean:
 	rm -f $(ALL) *.o
 
 test.asm: test.c
-	$(CC) $(CFLAGS) -c -fno-asynchronous-unwind-tables -O1 $<
+	$(CC) $(CFLAGS) -c -fno-asynchronous-unwind-tables -O2 $<
 	objconv -fnasm test.o

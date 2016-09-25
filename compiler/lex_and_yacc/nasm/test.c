@@ -6,7 +6,10 @@ double add(double x) {
 }
 
 double mul(double x) {
-    return x * 2.73;
+    if (x < x/2.0) {
+        return x;
+    }
+    return x+1.2;
 }
 
 double combine(double x) {
