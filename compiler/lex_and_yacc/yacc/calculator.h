@@ -1,3 +1,5 @@
+#ifndef CALCULATOR_H
+#define CALCULATOR_H
 #include <stdio.h>
 
 typedef enum { typeCon, typeId, typeOpr} nodeEnum;
@@ -29,3 +31,7 @@ typedef struct nodeType_ {
 } nodeType;
 
 extern double symtable[26];
+extern double double_abs(double x);
+extern void print_num(double x);
+
+#endif /* !CALCULATOR_H */

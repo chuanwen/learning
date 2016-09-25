@@ -141,12 +141,24 @@ void yyerror(char *s) {
     fprintf(stderr, "%s\n", s);
 }
 
+int EndsWith(const char *str, const char *suffix)
+{
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix >  lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
+
 int main(int argc, char** argv) {
-    if (argc != 2) {
+    if (argc != 2 && EndsWith(argv[0],"calcc")) {
         fprintf(stderr, "Usage: %s <program_file>\nExample: %s p1.ca\n", argv[0], argv[0]);
         exit(1);
+    } else {
+        yyin = fopen(argv[1], "r");
     }
-    yyin = fopen(argv[1], "r");
     ex_init(argc, argv);
     yyparse();
     ex_final(argc, argv);

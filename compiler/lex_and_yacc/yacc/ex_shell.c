@@ -8,13 +8,6 @@
 void ex_init(int argc, char** argv) {;}
 void ex_final(int argc, char** argv) {;}
 
-double double_abs(double x) {
-    if (x > 0.0) {
-        return x;
-    }
-    return -x;
-}
-
 double ex(nodeType *p) {
     if (!p) return 0.0;
     nodeType** op = p->opr.op;
@@ -35,11 +28,7 @@ double ex(nodeType *p) {
                                 }
                                 return 0;
                 case PRINT:     ans = ex(op[0]);
-                                if (double_abs(ans - (int)ans) <= 1e-16) {
-                                    printf("%d\n", (int) ans);
-                                } else {
-                                    printf("%f\n", ans);
-                                }
+                                print_num(ans);
                                 return 0;
                 case '\n':      ex(op[0]);
                                 return ex(op[1]);

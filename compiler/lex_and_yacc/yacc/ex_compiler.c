@@ -21,6 +21,9 @@ void ex_init(int argc, char** argv) {
 
     fprintf(textF, "\t\tSECTION .text\n");
     fprintf(dataF, "\t\tSECTION .data\n");
+    fprintf(dataF, "EPS\t\tdq 1.0e-16\n");
+    fprintf(dataF, "PFLOAT\t\tdq 0\n");
+    fprintf(dataF, "PFLOAT2\t\tdq 0\n");
 }
 
 void ex_final(int argc, char** argv) {
@@ -29,6 +32,8 @@ void ex_final(int argc, char** argv) {
             fprintf(dataF, "VAR_%c:\t\tdq 0.0\n", i + 'a');
         }
     }
+    EmitText("mov eax, 0");
+    EmitText("ret");
     fclose(textF);
     fclose(dataF);
     char cmd[256];
@@ -143,6 +148,14 @@ double ex(nodeType* p) {
                     ex(op[0]);
                     EmitText("fchs");
                     break;
+                case INC1:
+                    EmitText("fld1");
+                    EmitOpE(op[0]->id.i, "fadd");
+                    break;
+                case DEC1:
+                    EmitText("fld1");
+                    EmitOpE(op[0]->id.i, "fsub");
+                    break;
                 case ADDE:
                     ex(op[1]); 
                     EmitOpE(op[0]->id.i, "fadd");
@@ -167,6 +180,8 @@ double ex(nodeType* p) {
                         case '-': EmitText("fsub"); break;
                         case '*': EmitText("fmul"); break;
                         case '/': EmitText("fdiv"); break;
+                        case '%': EmitText("mathMod"); break;
+                        case '^': EmitText("mathPow"); break;
                         case '<': EmitText("compLT"); break; 
                         case '>': EmitText("compGT"); break;
                         case GE:  EmitText("compGE"); break;

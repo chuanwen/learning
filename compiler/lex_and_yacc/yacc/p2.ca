@@ -1,0 +1,35 @@
+i = 1
+while (i <= 5) {
+    print i
+    i += 1
+}
+
+if (i == 6) {
+    print 6
+} else {
+    print 0
+}
+
+if (7 >= 7) {
+    print 7
+} else {
+    print 0
+}
+
+if (8 != 8) {
+    print 0
+} else {
+    print 8
+}
+
+if (9 < 9) {
+    print 0
+} else {
+    print 9
+}
+
+if (10 == 10) {
+    print 10
+} else {
+    print 0
+}

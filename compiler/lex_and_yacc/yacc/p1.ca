@@ -1,5 +1,12 @@
+print (1+2)*3
+
 i = 1
-while (i <= 10) {
-    i += 1
-    print i
+x = 0
+y = 0
+while (i <= 100) {
+    x += i
+    y += (i % 3) * i^(-0.5)
+    i++
 }
+print x
+print y

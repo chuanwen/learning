@@ -1,35 +1,107 @@
-                extern printf
+                extern print_num
+                extern double_module
+                extern pow
 
 %macro          print 0
-
-                SECTION .data
-.p_fmt          db "%f",10,0
-.p_float        dq 0.0
-
                 SECTION .text
-                fstp qword [.p_float]
-
-                push dword [.p_float+4]
-                push dword [.p_float]
-                push dword .p_fmt
-                call printf
-                add esp, 12
+                fstp qword [PFLOAT]
+                push dword [PFLOAT+4]
+                push dword [PFLOAT]
+                call print_num
+                add esp, 8
 
 %endmacro
 
-
-%macro          compLE 0
-                SECTION .data
-.EPS            dq 1.e-16
+%macro          mathMod 0
                 SECTION .text
+                fstp qword [PFLOAT2]
+                fstp qword [PFLOAT]
+                push dword [PFLOAT2+4]
+                push dword [PFLOAT2]
+                push dword [PFLOAT+4]
+                push dword [PFLOAT]
+                call double_module
+                add esp, 16
+%endmacro
+
+%macro          mathPow 0
+                SECTION .text
+                fstp qword [PFLOAT2]
+                fstp qword [PFLOAT]
+                push dword [PFLOAT2+4]
+                push dword [PFLOAT2]
+                push dword [PFLOAT+4]
+                push dword [PFLOAT]
+                call pow
+                add esp, 16
+%endmacro
+
+%macro          compLE 0            ; left(st1), right(st0) ?
+                SECTION .text
+                xor eax, eax
+                fsub                ; st0 = left - right
+                fld qword [EPS]     ; st0 = -EPS
+                fucomip             ; is left - right < EPS ?
+                setb al
+                fstp
+                cmp eax, 1          ;
+%endmacro 
+
+%macro          compLT 0            ; left(st1), right(st0) ?
+                SECTION .text
+                xor eax, eax
+                fsub                ; st0 = left - right
+                fchs
+                fld qword [EPS]  
+                fucomip             ; is left - right < EPS ?
+                seta al
+                fstp
+                cmp eax, 1          ;
+%endmacro
+
+%macro          compGE 0            ; left(st1), right(st0) ?
+                SECTION .text
+                xor eax, eax
+                fsub                ; st0 = right - left
+                fld qword [EPS]
+                fchs                ; st0 = -EPS
+                fucomip             ; is  right - left < -EPS ?
+                seta al
+                fstp
+                cmp eax, 1          ;
+%endmacro
+
+%macro          compGT 0            ; left(st1), right(st0) ?
+                SECTION .text
+                xor eax, eax
+                fsub                ; st0 = right - left
+                fld qword [EPS]     ; st0 = EPS
+                fucomip             ; is  right - left < EPS ?
+                seta al
+                fstp
+                cmp eax, 1          ;
+%endmacro
+
+%macro          compNE 0
                 fsub
-                fld qword [.EPS]
-                fcom st0, st1
-                fstsw ax
+                fabs
+                fld qword [EPS]
+                xor eax, eax
+                fucomip
+                seta al
                 fstp
+                cmp eax, 1
+%endmacro
+
+%macro          compEQ 0
+                fsub
+                fabs
+                fld qword [EPS]
+                xor eax, eax
+                fucomip
+                seta al
                 fstp
-                and eax, 0100011100000000B ; take only condition code flags
-                cmp eax, 0000000100000000B ; is st0 < source ?
+                cmp eax, 0
 %endmacro
 
 global main
